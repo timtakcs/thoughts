@@ -6,11 +6,38 @@
 	objectVersion = 77;
 	objects = {
 
+/* Begin PBXBuildFile section */
+		381883E5FAA8A1EA52A25190 /* Pods_thoughtsTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 592C3D94A7E060E4B5CDB70E /* Pods_thoughtsTests.framework */; };
+		AAB3F25F6C9124995B35CA95 /* Pods_thoughts.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C52A870407A97220D7679F10 /* Pods_thoughts.framework */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		6847518B2EE86B90000CAEC1 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 689C15B02EDEF3C90064DC31 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 689C15B72EDEF3CA0064DC31;
+			remoteInfo = thoughts;
+		};
+/* End PBXContainerItemProxy section */
+
 /* Begin PBXFileReference section */
+		592C3D94A7E060E4B5CDB70E /* Pods_thoughtsTests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_thoughtsTests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		59D933A4515951D6AFE50276 /* Pods-thoughts.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-thoughts.release.xcconfig"; path = "Target Support Files/Pods-thoughts/Pods-thoughts.release.xcconfig"; sourceTree = "<group>"; };
+		684751872EE86B90000CAEC1 /* thoughtsTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = thoughtsTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		689C15B82EDEF3CA0064DC31 /* thoughts.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = thoughts.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		6E33CF4B593EE17B9BE69C14 /* Pods-thoughtsTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-thoughtsTests.debug.xcconfig"; path = "Target Support Files/Pods-thoughtsTests/Pods-thoughtsTests.debug.xcconfig"; sourceTree = "<group>"; };
+		91C2FAA713403DAFC30AD7EB /* Pods-thoughtsTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-thoughtsTests.release.xcconfig"; path = "Target Support Files/Pods-thoughtsTests/Pods-thoughtsTests.release.xcconfig"; sourceTree = "<group>"; };
+		C52A870407A97220D7679F10 /* Pods_thoughts.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_thoughts.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		F2DDEC4D379A520F658A1338 /* Pods-thoughts.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-thoughts.debug.xcconfig"; path = "Target Support Files/Pods-thoughts/Pods-thoughts.debug.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
+		684751882EE86B90000CAEC1 /* thoughtsTests */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			path = thoughtsTests;
+			sourceTree = "<group>";
+		};
 		689C15BA2EDEF3CA0064DC31 /* thoughts */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
 			path = thoughts;
@@ -19,10 +46,19 @@
 /* End PBXFileSystemSynchronizedRootGroup section */
 
 /* Begin PBXFrameworksBuildPhase section */
+		684751842EE86B90000CAEC1 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				381883E5FAA8A1EA52A25190 /* Pods_thoughtsTests.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		689C15B52EDEF3CA0064DC31 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				AAB3F25F6C9124995B35CA95 /* Pods_thoughts.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -33,7 +69,10 @@
 			isa = PBXGroup;
 			children = (
 				689C15BA2EDEF3CA0064DC31 /* thoughts */,
+				684751882EE86B90000CAEC1 /* thoughtsTests */,
 				689C15B92EDEF3CA0064DC31 /* Products */,
+				F7AD4733ED7D6734B523C69B /* Pods */,
+				9F79CB2E137B562F9E9564D7 /* Frameworks */,
 			);
 			sourceTree = "<group>";
 		};
@@ -41,20 +80,65 @@
 			isa = PBXGroup;
 			children = (
 				689C15B82EDEF3CA0064DC31 /* thoughts.app */,
+				684751872EE86B90000CAEC1 /* thoughtsTests.xctest */,
 			);
 			name = Products;
+			sourceTree = "<group>";
+		};
+		9F79CB2E137B562F9E9564D7 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				C52A870407A97220D7679F10 /* Pods_thoughts.framework */,
+				592C3D94A7E060E4B5CDB70E /* Pods_thoughtsTests.framework */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		F7AD4733ED7D6734B523C69B /* Pods */ = {
+			isa = PBXGroup;
+			children = (
+				F2DDEC4D379A520F658A1338 /* Pods-thoughts.debug.xcconfig */,
+				59D933A4515951D6AFE50276 /* Pods-thoughts.release.xcconfig */,
+				6E33CF4B593EE17B9BE69C14 /* Pods-thoughtsTests.debug.xcconfig */,
+				91C2FAA713403DAFC30AD7EB /* Pods-thoughtsTests.release.xcconfig */,
+			);
+			path = Pods;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
+		684751862EE86B90000CAEC1 /* thoughtsTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 6847518D2EE86B90000CAEC1 /* Build configuration list for PBXNativeTarget "thoughtsTests" */;
+			buildPhases = (
+				F33EC2DE76D9BDED236C4591 /* [CP] Check Pods Manifest.lock */,
+				684751832EE86B90000CAEC1 /* Sources */,
+				684751842EE86B90000CAEC1 /* Frameworks */,
+				684751852EE86B90000CAEC1 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				6847518C2EE86B90000CAEC1 /* PBXTargetDependency */,
+			);
+			fileSystemSynchronizedGroups = (
+				684751882EE86B90000CAEC1 /* thoughtsTests */,
+			);
+			name = thoughtsTests;
+			productName = thoughtsTests;
+			productReference = 684751872EE86B90000CAEC1 /* thoughtsTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
 		689C15B72EDEF3CA0064DC31 /* thoughts */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = 689C15C32EDEF3CA0064DC31 /* Build configuration list for PBXNativeTarget "thoughts" */;
 			buildPhases = (
+				F9AC31E8A36CCBF987480DD0 /* [CP] Check Pods Manifest.lock */,
 				689C15B42EDEF3CA0064DC31 /* Sources */,
 				689C15B52EDEF3CA0064DC31 /* Frameworks */,
 				689C15B62EDEF3CA0064DC31 /* Resources */,
+				B2E6B37073B526F517CD49C9 /* [CP] Embed Pods Frameworks */,
 			);
 			buildRules = (
 			);
@@ -64,8 +148,6 @@
 				689C15BA2EDEF3CA0064DC31 /* thoughts */,
 			);
 			name = thoughts;
-			packageProductDependencies = (
-			);
 			productName = thoughts;
 			productReference = 689C15B82EDEF3CA0064DC31 /* thoughts.app */;
 			productType = "com.apple.product-type.application";
@@ -80,6 +162,10 @@
 				LastSwiftUpdateCheck = 2610;
 				LastUpgradeCheck = 2610;
 				TargetAttributes = {
+					684751862EE86B90000CAEC1 = {
+						CreatedOnToolsVersion = 26.1.1;
+						TestTargetID = 689C15B72EDEF3CA0064DC31;
+					};
 					689C15B72EDEF3CA0064DC31 = {
 						CreatedOnToolsVersion = 26.1.1;
 					};
@@ -100,11 +186,19 @@
 			projectRoot = "";
 			targets = (
 				689C15B72EDEF3CA0064DC31 /* thoughts */,
+				684751862EE86B90000CAEC1 /* thoughtsTests */,
 			);
 		};
 /* End PBXProject section */
 
 /* Begin PBXResourcesBuildPhase section */
+		684751852EE86B90000CAEC1 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		689C15B62EDEF3CA0064DC31 /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -114,7 +208,82 @@
 		};
 /* End PBXResourcesBuildPhase section */
 
+/* Begin PBXShellScriptBuildPhase section */
+		B2E6B37073B526F517CD49C9 /* [CP] Embed Pods Frameworks */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-thoughts/Pods-thoughts-frameworks-${CONFIGURATION}-input-files.xcfilelist",
+			);
+			inputPaths = (
+			);
+			name = "[CP] Embed Pods Frameworks";
+			outputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-thoughts/Pods-thoughts-frameworks-${CONFIGURATION}-output-files.xcfilelist",
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-thoughts/Pods-thoughts-frameworks.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+		F33EC2DE76D9BDED236C4591 /* [CP] Check Pods Manifest.lock */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
+				"${PODS_ROOT}/Manifest.lock",
+			);
+			name = "[CP] Check Pods Manifest.lock";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+				"$(DERIVED_FILE_DIR)/Pods-thoughtsTests-checkManifestLockResult.txt",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
+			showEnvVarsInLog = 0;
+		};
+		F9AC31E8A36CCBF987480DD0 /* [CP] Check Pods Manifest.lock */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
+				"${PODS_ROOT}/Manifest.lock",
+			);
+			name = "[CP] Check Pods Manifest.lock";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+				"$(DERIVED_FILE_DIR)/Pods-thoughts-checkManifestLockResult.txt",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
+			showEnvVarsInLog = 0;
+		};
+/* End PBXShellScriptBuildPhase section */
+
 /* Begin PBXSourcesBuildPhase section */
+		684751832EE86B90000CAEC1 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		689C15B42EDEF3CA0064DC31 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -124,7 +293,61 @@
 		};
 /* End PBXSourcesBuildPhase section */
 
+/* Begin PBXTargetDependency section */
+		6847518C2EE86B90000CAEC1 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 689C15B72EDEF3CA0064DC31 /* thoughts */;
+			targetProxy = 6847518B2EE86B90000CAEC1 /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
 /* Begin XCBuildConfiguration section */
+		6847518E2EE86B90000CAEC1 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = 6E33CF4B593EE17B9BE69C14 /* Pods-thoughtsTests.debug.xcconfig */;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = UNKJ5879Y9;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = timtak.thoughtsTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				STRING_CATALOG_GENERATE_SYMBOLS = NO;
+				SWIFT_APPROACHABLE_CONCURRENCY = YES;
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/thoughts.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/thoughts";
+			};
+			name = Debug;
+		};
+		6847518F2EE86B90000CAEC1 /* Release */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = 91C2FAA713403DAFC30AD7EB /* Pods-thoughtsTests.release.xcconfig */;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = UNKJ5879Y9;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = timtak.thoughtsTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				STRING_CATALOG_GENERATE_SYMBOLS = NO;
+				SWIFT_APPROACHABLE_CONCURRENCY = YES;
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/thoughts.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/thoughts";
+			};
+			name = Release;
+		};
 		689C15C12EDEF3CA0064DC31 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -248,6 +471,7 @@
 		};
 		689C15C42EDEF3CA0064DC31 /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = F2DDEC4D379A520F658A1338 /* Pods-thoughts.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
@@ -255,12 +479,14 @@
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = UNKJ5879Y9;
 				ENABLE_PREVIEWS = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = NO;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				IPHONEOS_DEPLOYMENT_TARGET = 18.6;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -280,6 +506,7 @@
 		};
 		689C15C52EDEF3CA0064DC31 /* Release */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 59D933A4515951D6AFE50276 /* Pods-thoughts.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
@@ -287,12 +514,14 @@
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = UNKJ5879Y9;
 				ENABLE_PREVIEWS = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = NO;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				IPHONEOS_DEPLOYMENT_TARGET = 18.6;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -313,6 +542,15 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
+		6847518D2EE86B90000CAEC1 /* Build configuration list for PBXNativeTarget "thoughtsTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				6847518E2EE86B90000CAEC1 /* Debug */,
+				6847518F2EE86B90000CAEC1 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
 		689C15B32EDEF3C90064DC31 /* Build configuration list for PBXProject "thoughts" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (

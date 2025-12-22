@@ -11,7 +11,7 @@ import SwiftUI
 struct thoughtsApp: App {
     var body: some Scene {
         WindowGroup {
-            ContentView()
+            List()
         }
     }
 }
