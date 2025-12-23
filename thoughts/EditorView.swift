@@ -52,20 +52,20 @@ class EditorView: UIView {
         textView.translatesAutoresizingMaskIntoConstraints = false
 
         // Use custom Iosevka Aile Light font
-        let customFont = UIFont.iosevka(size: 20, weight: .light)
+        let customFont = UIFont.iosevka(size: 18, weight: .light)
         textView.font = customFont
         textView.backgroundColor = .clear
 
         // Increase outer margins
-        textView.textContainerInset = UIEdgeInsets(top: 60, left: 30, bottom: 30, right: 30)
+        textView.textContainerInset = UIEdgeInsets(top: 60, left: 24, bottom: 30, right: 24)
         textView.delegate = self
         textView.contentOffset = .zero
 
         // Setup paragraph style for bullet indentation
         let paragraphStyle = NSMutableParagraphStyle()
         paragraphStyle.firstLineHeadIndent = 0
-        paragraphStyle.headIndent = 14
-        paragraphStyle.lineSpacing = 4
+        paragraphStyle.headIndent = 16
+        paragraphStyle.lineSpacing = 6
 
         textView.typingAttributes = [
             .font: customFont,
@@ -149,17 +149,17 @@ class EditorView: UIView {
         let finalOffset: CGFloat
 
         if allowOverscroll {
-            if offsetY > 0 {
-                // Apply resistance when scrolling past top
+            if offsetY > maxContentOffset {
+                // Apply resistance when scrolling past bottom
+                let overshoot = offsetY - maxContentOffset
                 let resistance: CGFloat = 150
-                finalOffset = resistance * (1 - 1 / (1 + abs(offsetY) / resistance))
+                let resistedOvershoot = resistance * (1 - 1 / (1 + overshoot / resistance))
+                finalOffset = maxContentOffset + resistedOvershoot
             } else {
-                // Allow over-scroll at bottom without resistance
-                print("hitting this case")
-                finalOffset = offsetY
+                // Normal scrolling or past top (clamp to 0)
+                finalOffset = max(0, offsetY)
             }
         } else {
-            // Normal clamping
             finalOffset = max(0, min(offsetY, maxContentOffset))
         }
 
