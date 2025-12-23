@@ -14,7 +14,7 @@ let singaporeLocation = CLLocation(
 )
 
 @Observable public final class EditorModel {
-    var text: String = "• "
+    var text: String = "• \n•  \n•  \n•  \n• d \n•  \n•  \n•  \n•  \n•  \n•  \n•  \n•  \n•  \n•  \n•  \n•  \n•  \n•  \n•  \n• why is this not working •  \n •  \n •  \n •  \n •  \n •  \n •  \n •  \n •  \n •  \n •  \n •  \n •  \n •  \n •  \n •  \n •  \n •  \n •  \n •  \n •  \n •  \n •  \n •  \n •  \n •  \n"
 }
 
 struct List: View {
@@ -40,7 +40,7 @@ struct List: View {
         ZStack(alignment: .bottom) {
             // MARK: - Main Content
             VStack {
-                Text("What here?")
+                Text("What here??")
                     .font(.system(size: 34, weight: .bold))
                     .frame(maxWidth: .infinity, alignment: .leading)
                     .padding(.horizontal, 24)
@@ -101,7 +101,7 @@ struct List: View {
                     editorOffset = max(0.0, value.translation.y)
                 }
                 .onDragEnded { value in
-                    if value.translation.y > 250 {
+                    if value.translation.y > 200 {
                         withAnimation(.spring(response: 0.3, dampingFraction: 0.7)) {
                             editorOffset = UIScreen.main.bounds.height
                             saveNoteAndRefresh()
@@ -146,7 +146,7 @@ struct List: View {
             }
 
             editorModel.text = "will this show"
-            print("this does get called")
+            print("this does get called from the list")
             activeNoteId = nil
 
             DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {

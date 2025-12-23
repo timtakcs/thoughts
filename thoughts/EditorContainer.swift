@@ -86,8 +86,23 @@ struct EditorContainer: UIViewRepresentable {
             capsule.heightAnchor.constraint(equalToConstant: 5)
         ])
         
-        let panGesture = UIPanGestureRecognizer(target: context.coordinator, action: #selector(context.coordinator.handlePan(_:)))
-        panGesture.delegate = context.coordinator
+        // Setup gesture manager
+        let gestureManager = context.coordinator.gestureManager
+        gestureManager.containerView = containerView
+        gestureManager.editorView = editorView
+
+        // Pass parent callbacks directly - no intermediate callbacks
+        gestureManager.onDragChanged = onDragChanged
+        gestureManager.onDragEnded = onDragEnded
+
+        // Set initial container offset
+        gestureManager.currentContainerOffset = offset.wrappedValue
+
+        let panGesture = UIPanGestureRecognizer(
+            target: gestureManager,
+            action: #selector(GestureManager.handlePan(_:))
+        )
+        panGesture.delegate = gestureManager
         containerView.addGestureRecognizer(panGesture)
         
         context.coordinator.containerView = containerView
@@ -97,67 +112,22 @@ struct EditorContainer: UIViewRepresentable {
     
     public func updateUIView(_ uiView: ContainerView, context: Context) {
         uiView.editorView?.saveText()
+
+        // Keep GestureManager in sync with current container offset
+        context.coordinator.gestureManager.currentContainerOffset = offset.wrappedValue
     }
     
     func makeCoordinator() -> Coordinator {
         Coordinator(self)
     }
     
-    class Coordinator: NSObject, UIGestureRecognizerDelegate {
+    class Coordinator: NSObject {
         var parent: EditorContainer
         var containerView: ContainerView?
+        let gestureManager = GestureManager()
         
         init(_ parent: EditorContainer) {
             self.parent = parent
-        }
-        
-        @objc func handlePan(_ gesture: UIPanGestureRecognizer) {
-            guard let containerView = containerView else { return }
-            
-            let translation = gesture.translation(in: containerView)
-            let velocity = gesture.velocity(in: containerView)
-            let location = gesture.location(in: containerView)
-            
-            let value = EditorContainer.Value(
-                location: location,
-                translation: translation,
-                velocity: velocity)
-            
-            switch gesture.state {
-            case .began:
-                if let editorView = containerView.editorView,
-                   editorView.isAtTop && velocity.y > 0 {
-                    editorView.dismissKeyboard()
-                }
-            case .changed:
-                parent.onDragChanged(value)
-            case .ended:
-                parent.onDragEnded(value)
-            default:
-                break
-            }
-        }
-
-        func gestureRecognizer(_ gestureRecognizer: UIGestureRecognizer, shouldRecognizeSimultaneouslyWith otherGestureRecognizer: UIGestureRecognizer) -> Bool {
-            return true
-        }
-        
-        func gestureRecognizerShouldBegin(_ gestureRecognizer: UIGestureRecognizer) -> Bool {
-            guard let panGesture = gestureRecognizer as? UIPanGestureRecognizer,
-                  let containerView = self.containerView,
-                  let editorView = containerView.editorView else {
-                return true
-            }
-            
-            let velocity = panGesture.velocity(in: containerView)
-            let isPanningDown = velocity.y > 0
-            let isAtTop = editorView.isAtTop
-            
-            if isPanningDown && isAtTop {
-                return true
-            }
-
-            return false
         }
     }
     
