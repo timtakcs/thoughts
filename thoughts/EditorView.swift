@@ -11,6 +11,7 @@ class EditorView: UIView {
     private let textView = UITextView()
     private let model: EditorModel
     private var hasSetInitialOffset = false
+    private var keyboardHeight: CGFloat = 0
 
     private let bulletPrefix = "• "
 
@@ -25,25 +26,51 @@ class EditorView: UIView {
     var maxContentOffset: CGFloat {
         return max(0, textView.contentSize.height - textView.bounds.height)
     }
-    
+
+    var hasTextSelection: Bool {
+        guard let selectedRange = textView.selectedTextRange else { return false }
+        return selectedRange.start != selectedRange.end
+    }
+
     init(model: EditorModel) {
         self.model = model
         super.init(frame: .zero)
         setupTextView()
+        setupKeyboardObservers()
         loadInitialText()
     }
-    
+
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
+    }
+
+    deinit {
+        NotificationCenter.default.removeObserver(self)
     }
     
     private func setupTextView() {
         textView.translatesAutoresizingMaskIntoConstraints = false
-        textView.font = .systemFont(ofSize: 20, weight: .regular)
+
+        // Use custom Iosevka Aile Light font
+        let customFont = UIFont.iosevka(size: 20, weight: .light)
+        textView.font = customFont
         textView.backgroundColor = .clear
-        textView.textContainerInset = UIEdgeInsets(top: 60, left: 24, bottom: 16, right: 24)
+
+        // Increase outer margins
+        textView.textContainerInset = UIEdgeInsets(top: 60, left: 30, bottom: 30, right: 30)
         textView.delegate = self
         textView.contentOffset = .zero
+
+        // Setup paragraph style for bullet indentation
+        let paragraphStyle = NSMutableParagraphStyle()
+        paragraphStyle.firstLineHeadIndent = 0
+        paragraphStyle.headIndent = 14
+        paragraphStyle.lineSpacing = 4
+
+        textView.typingAttributes = [
+            .font: customFont,
+            .paragraphStyle: paragraphStyle
+        ]
 
         // Keep scrolling enabled for programmatic control, but disable the pan gesture
         textView.isScrollEnabled = true
@@ -67,37 +94,104 @@ class EditorView: UIView {
             textView.text = model.text
         }
     }
-    
+
+    private func setupKeyboardObservers() {
+        NotificationCenter.default.addObserver(
+            self,
+            selector: #selector(keyboardWillShow),
+            name: UIResponder.keyboardWillShowNotification,
+            object: nil
+        )
+        NotificationCenter.default.addObserver(
+            self,
+            selector: #selector(keyboardWillHide),
+            name: UIResponder.keyboardWillHideNotification,
+            object: nil
+        )
+    }
+
+    @objc private func keyboardWillShow(_ notification: Notification) {
+        if let keyboardFrame = notification.userInfo?[UIResponder.keyboardFrameEndUserInfoKey] as? CGRect {
+            keyboardHeight = keyboardFrame.height
+            scrollCursorAboveKeyboard()
+        }
+    }
+
+    @objc private func keyboardWillHide(_ notification: Notification) {
+        keyboardHeight = 0
+    }
+
+    private func scrollCursorAboveKeyboard() {
+        guard keyboardHeight > 0 else { return }
+        guard let selectedRange = textView.selectedTextRange else { return }
+
+        let cursorRect = textView.caretRect(for: selectedRange.start)
+        let targetVisibleY = textView.bounds.height - keyboardHeight - 20
+        let targetOffset = cursorRect.maxY - targetVisibleY
+        let finalOffset = max(0, targetOffset)
+
+        self.textView.setContentOffset(CGPoint(x: 0, y: finalOffset), animated: false)
+  }
+
     override func layoutSubviews() {
         super.layoutSubviews()
 
         if !hasSetInitialOffset && bounds.height > 0 {
             hasSetInitialOffset = true
-            textView.contentOffset = .zero
         }
     }
-    
-    override func didMoveToWindow() {
-        super.didMoveToWindow()
-        if window != nil {
-            DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
-                self.textView.contentOffset = .zero
-            }
-        }
-    }
-    
+
     func dismissKeyboard() {
         textView.resignFirstResponder()
     }
     
-    func setContentOffset(_ offsetY: CGFloat) {
-        let clampedOffset = max(0, min(offsetY, maxContentOffset))
-        textView.contentOffset = CGPoint(x: 0, y: clampedOffset)
+    func setContentOffset(_ offsetY: CGFloat, allowOverscroll: Bool = false) {
+        let finalOffset: CGFloat
+
+        if allowOverscroll {
+            if offsetY > 0 {
+                // Apply resistance when scrolling past top
+                let resistance: CGFloat = 150
+                finalOffset = resistance * (1 - 1 / (1 + abs(offsetY) / resistance))
+            } else {
+                // Allow over-scroll at bottom without resistance
+                print("hitting this case")
+                finalOffset = offsetY
+            }
+        } else {
+            // Normal clamping
+            finalOffset = max(0, min(offsetY, maxContentOffset))
+        }
+
+        textView.contentOffset = CGPoint(x: 0, y: finalOffset)
     }
 
     func finishScrolling(velocity: CGPoint) {
-        // Could add deceleration animation here later
-        // For now, just stop where we are
+        let currentOffset = textView.contentOffset.y
+
+        // Spring back if over-scrolled in either direction
+        if currentOffset > maxContentOffset || currentOffset < 0 {
+            let targetOffset = currentOffset > maxContentOffset ? maxContentOffset : 0
+            UIView.animate(
+                withDuration: 0.3,
+                delay: 0,
+                usingSpringWithDamping: 0.7,
+                initialSpringVelocity: 0,
+                options: [],
+                animations: {
+                    self.textView.contentOffset = CGPoint(x: 0, y: targetOffset)
+                }
+            )
+        }
+    }
+
+    func loadFromModel() {
+        print("loadFromModel called with: \(model.text.prefix(20))")
+        if model.text.isEmpty {
+            textView.text = bulletPrefix
+        } else {
+            textView.text = model.text
+        }
     }
 
     func saveText() {
@@ -107,38 +201,40 @@ class EditorView: UIView {
 
 extension EditorView: UITextViewDelegate {
     func textViewDidChange(_ textView: UITextView) {
+        print("textViewDidChange called")
         let text = textView.text ?? ""
 
         if text.isEmpty {
             textView.text = bulletPrefix
-            model.text = bulletPrefix
             return
         }
 
         if !text.hasPrefix(bulletPrefix) && !text.isEmpty {
-            textView.text = model.text
+            textView.text = bulletPrefix
             return
         }
 
-        model.text = text
+        scrollCursorAboveKeyboard()
+    }
+
+    func textViewDidChangeSelection(_ textView: UITextView) {
+        scrollCursorAboveKeyboard()
     }
 
     func textView(_ textView: UITextView, shouldChangeTextIn range: NSRange, replacementText text: String) -> Bool {
-        let isNewLine = text == "\n"
-        let prefix = (isNewLine ? bulletPrefix : "")
-        let bulletCount = (isNewLine ? bulletPrefix.count : 0)
+          if text == "\n" {
+              let currentText = textView.text as NSString
+              let newText = currentText.replacingCharacters(in: range, with: "\n" + bulletPrefix)
+              textView.text = newText
 
-        let currentText = textView.text as NSString
-        let newText = currentText.replacingCharacters(in: range, with: text + prefix)
+              let newPosition = range.location + 1 + bulletPrefix.count
+              if let newCursorPosition = textView.position(from: textView.beginningOfDocument, offset: newPosition) {
+                  textView.selectedTextRange = textView.textRange(from: newCursorPosition, to: newCursorPosition)
+              }
 
-        textView.text = newText
+              return false
+          }
 
-        let newPosition = range.location + text.count + bulletCount
-        if let newCursorPosition = textView.position(from: textView.beginningOfDocument, offset: newPosition) {
-            textView.selectedTextRange = textView.textRange(from: newCursorPosition, to: newCursorPosition)
-        }
-
-        model.text = newText
-        return false
-    }
+          return true
+      }
 }

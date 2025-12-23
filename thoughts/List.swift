@@ -14,7 +14,8 @@ let singaporeLocation = CLLocation(
 )
 
 @Observable public final class EditorModel {
-    var text: String = "• \n•  \n•  \n•  \n• d \n•  \n•  \n•  \n•  \n•  \n•  \n•  \n•  \n•  \n•  \n•  \n•  \n•  \n•  \n•  \n• why is this not working •  \n •  \n •  \n •  \n •  \n •  \n •  \n •  \n •  \n •  \n •  \n •  \n •  \n •  \n •  \n •  \n •  \n •  \n •  \n •  \n •  \n •  \n •  \n •  \n •  \n •  \n"
+    var text: String = ""
+    var reloadTrigger = UUID()
 }
 
 struct List: View {
@@ -41,7 +42,7 @@ struct List: View {
             // MARK: - Main Content
             VStack {
                 Text("What here??")
-                    .font(.system(size: 34, weight: .bold))
+                    .font(.iosevka(size: 34, weight: .bold))
                     .frame(maxWidth: .infinity, alignment: .leading)
                     .padding(.horizontal, 24)
                     .padding(.top, 24)
@@ -52,6 +53,7 @@ struct List: View {
                         if let noteId = note.id {
                             activeNoteId = noteId
                             editorModel.text = note.content
+                            editorModel.reloadTrigger = UUID()
                             withAnimation(.spring(response: 0.3, dampingFraction: 0.8)) {
                                 showingEditor = true
                                 editorOffset = 0
@@ -73,13 +75,14 @@ struct List: View {
                     Button(action: {
                         activeNoteId = nil
                         editorModel.text = ""
+                        editorModel.reloadTrigger = UUID()
                         withAnimation(.spring(response: 0.3, dampingFraction: 0.8)) {
                             showingEditor = true
                             editorOffset = 0
                         }
                     }) {
                         Image(systemName: "plus")
-                            .font(.system(size: 24, weight: .semibold))
+                            .font(.iosevka(size: 24, weight: .bold))
                             .foregroundColor(.black.opacity(1.0))
                             .frame(width: 60, height: 60)
                             .background(Color.white)
@@ -145,8 +148,6 @@ struct List: View {
                 try db.saveNote(content: noteText, location: singaporeLocation)
             }
 
-            editorModel.text = "will this show"
-            print("this does get called from the list")
             activeNoteId = nil
 
             DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {

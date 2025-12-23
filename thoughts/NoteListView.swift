@@ -21,6 +21,9 @@ struct NoteListView: UIViewRepresentable {
         tableView.dataSource = context.coordinator
         tableView.register(NoteCell.self, forCellReuseIdentifier: "NoteCell")
 
+        tableView.delaysContentTouches = false
+//        tableView.canCancelContentTouches = true
+
         return tableView
     }
     
@@ -130,7 +133,7 @@ class NoteCell: UITableViewCell {
     private var finalOffset: CGFloat = 0
     private var panGestureRecognizer: UIPanGestureRecognizer!
     
-    private let deleteThreshold: CGFloat = 60
+    private let deleteThreshold: CGFloat = 70
     private let deleteButtonWidth: CGFloat = 100
     private let separatorWidthRatio: CGFloat = 0.9
     
@@ -177,22 +180,22 @@ class NoteCell: UITableViewCell {
         cellContentView.translatesAutoresizingMaskIntoConstraints = false
         contentView.addSubview(cellContentView)
         
-        dayLabel.font = .systemFont(ofSize: 20, weight: .bold)
+        dayLabel.font = .iosevka(size: 20, weight: .bold)
         dayLabel.textColor = .label
         dayLabel.textAlignment = .center
-        
-        monthLabel.font = .systemFont(ofSize: 12, weight: .medium)
+
+        monthLabel.font = .iosevka(size: 12)
         monthLabel.textColor = .systemGray
         monthLabel.textAlignment = .center
-        
+
         dateStackView.axis = .vertical
         dateStackView.spacing = 2
         dateStackView.alignment = .center
         dateStackView.addArrangedSubview(dayLabel)
         dateStackView.addArrangedSubview(monthLabel)
         dateStackView.translatesAutoresizingMaskIntoConstraints = false
-        
-        contentLabel.font = .systemFont(ofSize: 16)
+
+        contentLabel.font = .iosevka(size: 16)
         contentLabel.textColor = .label
         contentLabel.numberOfLines = 1
         contentLabel.translatesAutoresizingMaskIntoConstraints = false
@@ -253,6 +256,7 @@ class NoteCell: UITableViewCell {
 
         switch gesture.state {
         case .began:
+            layer.removeAllAnimations()
             break
 
         case .changed:
@@ -290,7 +294,11 @@ class NoteCell: UITableViewCell {
     }
     
     private func animateToOffset(_ offset: CGFloat) {
-        UIView.animate(withDuration: 0.5, delay: 0, usingSpringWithDamping: 1.0, initialSpringVelocity: 0.5) {
+        UIView.animate(withDuration: 0.5,
+                       delay: 0,
+                       usingSpringWithDamping: 0.8 ,
+                       initialSpringVelocity: 1.0,
+                       options: [.allowUserInteraction, .beginFromCurrentState]) {
             self.currentOffset = offset
             self.finalOffset = offset
             self.updateOffsets()

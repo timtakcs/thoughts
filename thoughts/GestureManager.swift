@@ -41,10 +41,12 @@ class GestureManager: NSObject {
             textViewStartOffset = editorView.contentOffsetY
             containerStartOffset = currentContainerOffset
             currentOwner = determineInitialOwner(velocity: velocity)
-            
+
             gestureStartOffset = editorView.contentOffsetY
 
             if currentOwner == .container && velocity.y > 0 {
+                editorView.dismissKeyboard()
+            } else if currentOwner == .textView {
                 editorView.dismissKeyboard()
             }
 
@@ -82,7 +84,7 @@ class GestureManager: NSObject {
 
             case .textView:
                 let newOffset = gestureStartOffset - effectiveTranslation.y
-                editorView.setContentOffset(newOffset)
+                editorView.setContentOffset(newOffset, allowOverscroll: true)
             }
 
         case .ended, .cancelled:
@@ -154,6 +156,13 @@ class GestureManager: NSObject {
 
 extension GestureManager: UIGestureRecognizerDelegate {
     func gestureRecognizerShouldBegin(_ gestureRecognizer: UIGestureRecognizer) -> Bool {
+        guard let editorView = editorView else { return true }
+
+        // If text is selected, let UITextView handle the gesture for selection manipulation
+        if editorView.hasTextSelection {
+            return false
+        }
+
         return true
     }
     
