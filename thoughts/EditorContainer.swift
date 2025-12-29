@@ -86,16 +86,13 @@ struct EditorContainer: UIViewRepresentable {
             capsule.heightAnchor.constraint(equalToConstant: 5)
         ])
         
-        // Setup gesture manager
         let gestureManager = context.coordinator.gestureManager
         gestureManager.containerView = containerView
         gestureManager.editorView = editorView
 
-        // Pass parent callbacks directly - no intermediate callbacks
         gestureManager.onDragChanged = onDragChanged
         gestureManager.onDragEnded = onDragEnded
 
-        // Set initial container offset
         gestureManager.currentContainerOffset = offset.wrappedValue
 
         let panGesture = UIPanGestureRecognizer(
@@ -119,7 +116,6 @@ struct EditorContainer: UIViewRepresentable {
 
         uiView.editorView?.saveText()
 
-        // Keep GestureManager in sync with current container offset
         context.coordinator.gestureManager.currentContainerOffset = offset.wrappedValue
     }
     

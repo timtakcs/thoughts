@@ -51,17 +51,15 @@ class EditorView: UIView {
     private func setupTextView() {
         textView.translatesAutoresizingMaskIntoConstraints = false
 
-        // Use custom Iosevka Aile Light font
         let customFont = UIFont.iosevka(size: 18, weight: .light)
         textView.font = customFont
         textView.backgroundColor = .clear
+        textView.tintColor = .white
 
-        // Increase outer margins
         textView.textContainerInset = UIEdgeInsets(top: 60, left: 24, bottom: 30, right: 24)
         textView.delegate = self
         textView.contentOffset = .zero
 
-        // Setup paragraph style for bullet indentation
         let paragraphStyle = NSMutableParagraphStyle()
         paragraphStyle.firstLineHeadIndent = 0
         paragraphStyle.headIndent = 16
@@ -72,7 +70,6 @@ class EditorView: UIView {
             .paragraphStyle: paragraphStyle
         ]
 
-        // Keep scrolling enabled for programmatic control, but disable the pan gesture
         textView.isScrollEnabled = true
         textView.panGestureRecognizer.isEnabled = false
 
@@ -150,13 +147,11 @@ class EditorView: UIView {
 
         if allowOverscroll {
             if offsetY > maxContentOffset {
-                // Apply resistance when scrolling past bottom
                 let overshoot = offsetY - maxContentOffset
                 let resistance: CGFloat = 150
                 let resistedOvershoot = resistance * (1 - 1 / (1 + overshoot / resistance))
                 finalOffset = maxContentOffset + resistedOvershoot
             } else {
-                // Normal scrolling or past top (clamp to 0)
                 finalOffset = max(0, offsetY)
             }
         } else {
@@ -169,7 +164,6 @@ class EditorView: UIView {
     func finishScrolling(velocity: CGPoint) {
         let currentOffset = textView.contentOffset.y
 
-        // Spring back if over-scrolled in either direction
         if currentOffset > maxContentOffset || currentOffset < 0 {
             let targetOffset = currentOffset > maxContentOffset ? maxContentOffset : 0
             UIView.animate(
@@ -186,7 +180,6 @@ class EditorView: UIView {
     }
 
     func loadFromModel() {
-        print("loadFromModel called with: \(model.text.prefix(20))")
         if model.text.isEmpty {
             textView.text = bulletPrefix
         } else {
@@ -201,7 +194,6 @@ class EditorView: UIView {
 
 extension EditorView: UITextViewDelegate {
     func textViewDidChange(_ textView: UITextView) {
-        print("textViewDidChange called")
         let text = textView.text ?? ""
 
         if text.isEmpty {

@@ -41,12 +41,12 @@ struct List: View {
         ZStack(alignment: .bottom) {
             // MARK: - Main Content
             VStack {
-                Text("What here??")
-                    .font(.iosevka(size: 34, weight: .bold))
-                    .frame(maxWidth: .infinity, alignment: .leading)
-                    .padding(.horizontal, 24)
-                    .padding(.top, 24)
-                    .padding(.bottom, 24)
+//                Text("What here??")
+//                    .font(.iosevka(size: 34, weight: .bold))
+//                    .frame(maxWidth: .infinity, alignment: .leading)
+//                    .padding(.horizontal, 24)
+//                    .padding(.top, 24)
+//                    .padding(.bottom, 24)
                 NoteListView(
                     notes: notes,
                     onNoteTap: { note in
@@ -84,11 +84,11 @@ struct List: View {
                         Image(systemName: "plus")
                             .font(.iosevka(size: 24, weight: .bold))
                             .foregroundColor(.black.opacity(1.0))
-                            .frame(width: 60, height: 60)
+                            .frame(width: 50, height: 50)
                             .background(Color.white)
-                            .clipShape(Circle())
+                            .clipShape(RoundedRectangle(cornerRadius: 12))
                             .overlay(
-                                Circle()
+                                RoundedRectangle(cornerRadius: 12)
                                     .stroke(Color.black, lineWidth: 2)
                             )
                             .shadow(color: .black.opacity(0.1), radius: 8, x: 0, y: 4)

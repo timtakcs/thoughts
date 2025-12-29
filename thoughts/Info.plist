@@ -7,5 +7,7 @@
 		<string>IosevkaAile-Light.ttc</string>
 		<string>IosevkaAile-Bold.ttc</string>
 	</array>
+	<key>UIFileSharingEnabled</key>
+	<true/>
 </dict>
 </plist>

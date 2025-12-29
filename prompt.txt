@@ -1,0 +1,1 @@
+i have my Logo.jpg file in the thoughts directory. there is also a Logo.png file which is the uncroppedversion. first, delete the logo.png file. then, using cli tools (like ffmpeg), convert this jpg to png and rescale it from 2048x2048 to 1024x1024. if you run into any issues, don't try to guess. just tell me and i will handle it manually.
