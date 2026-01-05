@@ -35,6 +35,24 @@ class EditorView: UIView {
     init(model: EditorModel) {
         self.model = model
         super.init(frame: .zero)
+
+        // Wire up the save/load callbacks
+        model.save = { [weak self] in
+            guard let self = self else { return }
+            print("save() is being called")
+            self.model.text = self.textView.text
+        }
+
+        model.load = { [weak self] in
+            print("load is being called")
+            guard let self = self else { return }
+            if self.model.text.isEmpty {
+                self.textView.text = self.bulletPrefix
+            } else {
+                self.textView.text = self.model.text
+            }
+        }
+
         setupTextView()
         setupKeyboardObservers()
         loadInitialText()
@@ -185,10 +203,6 @@ class EditorView: UIView {
         } else {
             textView.text = model.text
         }
-    }
-
-    func saveText() {
-        model.text = textView.text
     }
 }
 

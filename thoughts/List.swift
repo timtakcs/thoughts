@@ -15,7 +15,11 @@ let singaporeLocation = CLLocation(
 
 @Observable public final class EditorModel {
     var text: String = ""
-    var reloadTrigger = UUID()
+    var needsLoad: Bool = false
+
+    // Closures that EditorView will populate
+    var save: (() -> Void)?
+    var load: (() -> Void)?
 }
 
 struct List: View {
@@ -46,7 +50,7 @@ struct List: View {
                         if let noteId = note.id {
                             activeNoteId = noteId
                             editorModel.text = note.content
-                            editorModel.reloadTrigger = UUID()
+                            editorModel.needsLoad = true
                             withAnimation(.spring(response: 0.3, dampingFraction: 0.8)) {
                                 showingEditor = true
                                 editorOffset = 0
@@ -68,7 +72,7 @@ struct List: View {
                     Button(action: {
                         activeNoteId = nil
                         editorModel.text = ""
-                        editorModel.reloadTrigger = UUID()
+                        editorModel.needsLoad = true
                         withAnimation(.spring(response: 0.3, dampingFraction: 0.8)) {
                             showingEditor = true
                             editorOffset = 0
@@ -125,12 +129,18 @@ struct List: View {
     }
 
     private func saveNoteAndRefresh() {
+        // Save textView content to model
+        editorModel.save?()
+
         let noteText = editorModel.text
 
         var emptyNoteCharacters = CharacterSet.whitespacesAndNewlines
         emptyNoteCharacters.insert(charactersIn: "•")
 
         guard !noteText.trimmingCharacters(in: emptyNoteCharacters).isEmpty else {
+            // Clear the editor state even if we don't save
+            editorModel.text = ""
+            activeNoteId = nil
             return
         }
 
@@ -141,6 +151,8 @@ struct List: View {
                 try db.saveNote(content: noteText, location: singaporeLocation)
             }
 
+            // Clear the editor state
+            editorModel.text = ""
             activeNoteId = nil
 
             DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {

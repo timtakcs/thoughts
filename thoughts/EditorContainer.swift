@@ -108,13 +108,10 @@ struct EditorContainer: UIViewRepresentable {
     }
     
     public func updateUIView(_ uiView: ContainerView, context: Context) {
-        // Check if we need to reload from model
-//        if context.coordinator.lastReloadTrigger != model.reloadTrigger {
-//            context.coordinator.lastReloadTrigger = model.reloadTrigger
-//            uiView.editorView?.loadFromModel()
-//        }
-//
-//        uiView.editorView?.saveText()
+        if model.needsLoad {
+            model.needsLoad = false
+            uiView.editorView?.loadFromModel()
+        }
 
         context.coordinator.gestureManager.currentContainerOffset = offset.wrappedValue
     }
@@ -127,7 +124,6 @@ struct EditorContainer: UIViewRepresentable {
         var parent: EditorContainer
         var containerView: ContainerView?
         let gestureManager = GestureManager()
-        var lastReloadTrigger: UUID?
 
         init(_ parent: EditorContainer) {
             self.parent = parent
