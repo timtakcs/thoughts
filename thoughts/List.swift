@@ -19,6 +19,8 @@ let singaporeLocation = CLLocation(
 }
 
 struct List: View {
+    let db: DB
+
     @State private var notes: [Note] = []
 
     @State private var activeNoteId: Int64? = nil
@@ -27,15 +29,6 @@ struct List: View {
 
     private let separatorWidthRatio: CGFloat = 0.9
     private let editorModel: EditorModel = .init()
-    private let db: DB
-
-    init() {
-        do {
-            self.db = try DB()
-        } catch {
-            fatalError("Failed to initialize database: \(error)")
-        }
-    }
 
     var body: some View {
         ZStack(alignment: .bottom) {
@@ -175,5 +168,5 @@ struct List: View {
 }
 
 #Preview {
-    List()
+    List(db: try! DB())
 }
