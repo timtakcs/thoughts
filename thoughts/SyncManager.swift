@@ -30,7 +30,7 @@ struct SyncManager {
     let db: DB
     let baseURL: URL
 
-    init(db: DB, baseURL: String = "http://192.168.4.158:8000") {
+    init(db: DB, baseURL: String = "http://100.124.79.7:8000") {
         self.db = db
         self.baseURL = URL(string: baseURL)! // im just hardcoding this
     }

@@ -10,6 +10,7 @@ import UIKit
 class EditorView: UIView {
     private let textView = UITextView()
     private let model: EditorModel
+    private let onTextChange: (String) -> Void
     private var hasSetInitialOffset = false
     private var keyboardHeight: CGFloat = 0
 
@@ -32,23 +33,26 @@ class EditorView: UIView {
         return selectedRange.start != selectedRange.end
     }
 
-    init(model: EditorModel) {
+    init(model: EditorModel, onTextChange: @escaping (String) -> Void) {
         self.model = model
+        self.onTextChange = onTextChange
         super.init(frame: .zero)
 
         // Wire up the save/load callbacks
         model.save = { [weak self] in
-            guard let self = self else { return }
-            print("save() is being called")
-            self.model.text = self.textView.text
+//            guard let self = self else { return }
+//            print("\nsave() is being called\n#\n")
+//            self.model.text = self.textView.text
+            print("if everything works, delete this")
         }
 
         model.load = { [weak self] in
-            print("load is being called")
+            print("load() is being called")
             guard let self = self else { return }
             if self.model.text.isEmpty {
                 self.textView.text = self.bulletPrefix
             } else {
+                print("is setting text, should work now!")
                 self.textView.text = self.model.text
             }
         }
@@ -56,6 +60,14 @@ class EditorView: UIView {
         setupTextView()
         setupKeyboardObservers()
         loadInitialText()
+    }
+
+    func setText(text: String) {
+        if text.isEmpty {
+            textView.text = bulletPrefix
+        } else {
+            textView.text = text
+        }
     }
 
     required init?(coder: NSCoder) {
@@ -104,7 +116,6 @@ class EditorView: UIView {
     private func loadInitialText() {
         if model.text.isEmpty {
             textView.text = bulletPrefix
-            model.text = bulletPrefix
         } else {
             textView.text = model.text
         }
@@ -197,11 +208,14 @@ class EditorView: UIView {
         }
     }
 
-    func loadFromModel() {
-        if model.text.isEmpty {
+    func loadFromModel(inputText: String? = nil) {
+        let text = inputText ?? model.text
+        if text.isEmpty || text == "• " {
+            print("loadFromMode() thinks the model is empty, text is:", text)
             textView.text = bulletPrefix
         } else {
-            textView.text = model.text
+            print("loadFromModel() thinks the model text is", text)
+            textView.text = text
         }
     }
 }
@@ -219,6 +233,8 @@ extension EditorView: UITextViewDelegate {
             textView.text = bulletPrefix
             return
         }
+
+        onTextChange(textView.text)
 
         scrollCursorAboveKeyboard()
     }

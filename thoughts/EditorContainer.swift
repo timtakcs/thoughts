@@ -60,7 +60,12 @@ struct EditorContainer: UIViewRepresentable {
     func makeUIView(context: Context) -> ContainerView {
         let containerView = ContainerView()
         
-        let editorView = EditorView(model: model)
+        let editorView = EditorView(
+            model: model,
+            onTextChange: { newtext in
+                model.text = newtext
+            }
+        )
         containerView.editorView = editorView
         
         editorView.translatesAutoresizingMaskIntoConstraints = false
@@ -108,11 +113,14 @@ struct EditorContainer: UIViewRepresentable {
     }
     
     public func updateUIView(_ uiView: ContainerView, context: Context) {
-        if model.needsLoad {
-            model.needsLoad = false
-            uiView.editorView?.loadFromModel()
-        }
+//        print("update ui view is actually getting called \n")
+//        if model.needsLoad {
+//            model.needsLoad = false
+//            print("reloading model with: " + model.text)
+//            uiView.editorView?.loadFromModel(inputText: model.text)
+//        }
 
+        uiView.editorView?.setText(text: model.text)
         context.coordinator.gestureManager.currentContainerOffset = offset.wrappedValue
     }
 
