@@ -9,7 +9,6 @@ import UIKit
 
 class EditorView: UIView {
     private let textView = UITextView()
-    private let model: EditorModel
     private let onTextChange: (String) -> Void
     private var hasSetInitialOffset = false
     private var keyboardHeight: CGFloat = 0
@@ -33,33 +32,13 @@ class EditorView: UIView {
         return selectedRange.start != selectedRange.end
     }
 
-    init(model: EditorModel, onTextChange: @escaping (String) -> Void) {
-        self.model = model
+    init(text: String, onTextChange: @escaping (String) -> Void) {
         self.onTextChange = onTextChange
         super.init(frame: .zero)
 
-        // Wire up the save/load callbacks
-        model.save = { [weak self] in
-//            guard let self = self else { return }
-//            print("\nsave() is being called\n#\n")
-//            self.model.text = self.textView.text
-            print("if everything works, delete this")
-        }
-
-        model.load = { [weak self] in
-            print("load() is being called")
-            guard let self = self else { return }
-            if self.model.text.isEmpty {
-                self.textView.text = self.bulletPrefix
-            } else {
-                print("is setting text, should work now!")
-                self.textView.text = self.model.text
-            }
-        }
-
         setupTextView()
         setupKeyboardObservers()
-        loadInitialText()
+        setText(text: text)
     }
 
     func setText(text: String) {
@@ -111,14 +90,6 @@ class EditorView: UIView {
             textView.trailingAnchor.constraint(equalTo: trailingAnchor),
             textView.bottomAnchor.constraint(equalTo: bottomAnchor)
         ])
-    }
-    
-    private func loadInitialText() {
-        if model.text.isEmpty {
-            textView.text = bulletPrefix
-        } else {
-            textView.text = model.text
-        }
     }
 
     private func setupKeyboardObservers() {
@@ -205,17 +176,6 @@ class EditorView: UIView {
                     self.textView.contentOffset = CGPoint(x: 0, y: targetOffset)
                 }
             )
-        }
-    }
-
-    func loadFromModel(inputText: String? = nil) {
-        let text = inputText ?? model.text
-        if text.isEmpty || text == "• " {
-            print("loadFromMode() thinks the model is empty, text is:", text)
-            textView.text = bulletPrefix
-        } else {
-            print("loadFromModel() thinks the model text is", text)
-            textView.text = text
         }
     }
 }

@@ -48,7 +48,6 @@ struct List: View {
                     notes: notes,
                     onNoteTap: { note in
                         if let noteId = note.id {
-                            print("note conent:", note.content)
                             activeNoteId = noteId
                             editorModel.text = note.content
 //                            editorModel.needsLoad = true
@@ -72,7 +71,6 @@ struct List: View {
                     Spacer()
                     Button(action: {
                         activeNoteId = nil
-                        print("clearing model")
                         editorModel.text = ""
 //                        editorModel.needsLoad = true
                         withAnimation(.spring(response: 0.3, dampingFraction: 0.8)) {
@@ -140,8 +138,6 @@ struct List: View {
         emptyNoteCharacters.insert(charactersIn: "•")
 
         guard !noteText.trimmingCharacters(in: emptyNoteCharacters).isEmpty else {
-            // Clear the editor state even if we don't save
-            print("clearing model")
             editorModel.text = ""
             activeNoteId = nil
             return
@@ -154,9 +150,7 @@ struct List: View {
                 try db.saveNote(content: noteText, location: singaporeLocation)
             }
 
-            // Clear the editor state
             editorModel.text = ""
-            print("clearing model")
             activeNoteId = nil
 
             DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {

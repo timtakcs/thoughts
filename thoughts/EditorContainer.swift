@@ -61,7 +61,7 @@ struct EditorContainer: UIViewRepresentable {
         let containerView = ContainerView()
         
         let editorView = EditorView(
-            model: model,
+            text: model.text,
             onTextChange: { newtext in
                 model.text = newtext
             }
@@ -113,13 +113,6 @@ struct EditorContainer: UIViewRepresentable {
     }
     
     public func updateUIView(_ uiView: ContainerView, context: Context) {
-//        print("update ui view is actually getting called \n")
-//        if model.needsLoad {
-//            model.needsLoad = false
-//            print("reloading model with: " + model.text)
-//            uiView.editorView?.loadFromModel(inputText: model.text)
-//        }
-
         uiView.editorView?.setText(text: model.text)
         context.coordinator.gestureManager.currentContainerOffset = offset.wrappedValue
     }
