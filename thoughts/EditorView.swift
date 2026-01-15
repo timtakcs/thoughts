@@ -204,21 +204,23 @@ extension EditorView: UITextViewDelegate {
     }
 
     func textView(_ textView: UITextView, shouldChangeTextIn range: NSRange, replacementText text: String) -> Bool {
-          if text == "\n" {
-              let currentText = textView.text as NSString
-              let newText = currentText.replacingCharacters(in: range, with: "\n" + bulletPrefix)
-              textView.text = newText
+        if text == "\n" {
+            let currentText = textView.text as NSString
+            let newText = currentText.replacingCharacters(in: range, with: "\n" + bulletPrefix)
+            textView.text = newText
 
-              let newPosition = range.location + 1 + bulletPrefix.count
-              if let newCursorPosition = textView.position(from: textView.beginningOfDocument, offset: newPosition) {
-                  textView.selectedTextRange = textView.textRange(from: newCursorPosition, to: newCursorPosition)
-              }
+            let newPosition = range.location + 1 + bulletPrefix.count
+            if let newCursorPosition = textView.position(from: textView.beginningOfDocument, offset: newPosition) {
+                textView.selectedTextRange = textView.textRange(from: newCursorPosition, to: newCursorPosition)
+            }
 
-              onTextChange(textView.text)
+            onTextChange(textView.text)
+            scrollCursorAboveKeyboard()
 
-              return false
-          }
+            return false
+        }
 
-          return true
-      }
+        scrollCursorAboveKeyboard()
+        return true
+    }
 }

@@ -99,7 +99,7 @@ struct List: View {
                     editorOffset = max(0.0, value.translation.y)
                 }
                 .onDragEnded { value in
-                    if value.translation.y > 200 {
+                    if value.translation.y > 150 {
                         withAnimation(.spring(response: 0.3, dampingFraction: 0.7)) {
                             editorOffset = UIScreen.main.bounds.height
                             saveNoteAndRefresh()

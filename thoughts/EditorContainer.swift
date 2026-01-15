@@ -79,19 +79,6 @@ struct EditorContainer: UIViewRepresentable {
             editorView.bottomAnchor.constraint(equalTo: containerView.bottomAnchor)
         ])
         
-        let capsule = UIView()
-        capsule.backgroundColor = UIColor.systemGray3.withAlphaComponent(0.3)
-        capsule.layer.cornerRadius = 2.5
-        capsule.translatesAutoresizingMaskIntoConstraints = false
-        containerView.addSubview(capsule)
-        
-        NSLayoutConstraint.activate([
-            capsule.topAnchor.constraint(equalTo: containerView.topAnchor, constant: 12),
-            capsule.centerXAnchor.constraint(equalTo: containerView.centerXAnchor),
-            capsule.widthAnchor.constraint(equalToConstant: 40),
-            capsule.heightAnchor.constraint(equalToConstant: 5)
-        ])
-        
         let gestureManager = context.coordinator.gestureManager
         gestureManager.containerView = containerView
         gestureManager.editorView = editorView
