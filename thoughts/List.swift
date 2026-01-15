@@ -30,9 +30,9 @@ struct List: View {
     @State private var activeNoteId: Int64? = nil
     @State private var showingEditor = false
     @State private var editorOffset: CGFloat = UIScreen.main.bounds.height
+    @State private var editorModel: EditorModel = .init()
 
     private let separatorWidthRatio: CGFloat = 0.9
-    private let editorModel: EditorModel = .init()
 
     var body: some View {
         ZStack(alignment: .bottom) {
@@ -50,7 +50,6 @@ struct List: View {
                         if let noteId = note.id {
                             activeNoteId = noteId
                             editorModel.text = note.content
-//                            editorModel.needsLoad = true
                             withAnimation(.spring(response: 0.3, dampingFraction: 0.8)) {
                                 showingEditor = true
                                 editorOffset = 0
@@ -72,7 +71,6 @@ struct List: View {
                     Button(action: {
                         activeNoteId = nil
                         editorModel.text = ""
-//                        editorModel.needsLoad = true
                         withAnimation(.spring(response: 0.3, dampingFraction: 0.8)) {
                             showingEditor = true
                             editorOffset = 0
@@ -129,9 +127,6 @@ struct List: View {
     }
 
     private func saveNoteAndRefresh() {
-//        // Save textView content to model
-//        editorModel.save?()
-
         let noteText = editorModel.text
 
         var emptyNoteCharacters = CharacterSet.whitespacesAndNewlines

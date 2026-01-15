@@ -66,6 +66,7 @@ struct EditorContainer: UIViewRepresentable {
                 model.text = newtext
             }
         )
+
         containerView.editorView = editorView
         
         editorView.translatesAutoresizingMaskIntoConstraints = false

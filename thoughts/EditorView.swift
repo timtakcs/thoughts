@@ -214,6 +214,8 @@ extension EditorView: UITextViewDelegate {
                   textView.selectedTextRange = textView.textRange(from: newCursorPosition, to: newCursorPosition)
               }
 
+              onTextChange(textView.text)
+
               return false
           }
 
