@@ -65,7 +65,7 @@ class EditorView: UIView {
         textView.backgroundColor = .clear
         textView.tintColor = .white
 
-        textView.textContainerInset = UIEdgeInsets(top: 60, left: 24, bottom: 30, right: 24)
+        textView.textContainerInset = UIEdgeInsets(top: 30, left: 24, bottom: 60, right: 24)
         textView.delegate = self
         textView.contentOffset = .zero
 

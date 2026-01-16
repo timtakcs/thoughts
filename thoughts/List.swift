@@ -84,7 +84,7 @@ struct List: View {
                             .clipShape(RoundedRectangle(cornerRadius: 12))
                             .overlay(
                                 RoundedRectangle(cornerRadius: 12)
-                                    .stroke(Color.black, lineWidth: 2)
+                                    .stroke(Color.black, lineWidth: 0)
                             )
                             .shadow(color: .black.opacity(0.1), radius: 8, x: 0, y: 4)
                     }
@@ -113,6 +113,7 @@ struct List: View {
                 .offset(y: editorOffset)
                 .ignoresSafeArea(edges: .bottom)
         }
+        .background(Color.appBackground.ignoresSafeArea(edges: .top))
         .onAppear() {
             loadNotes()
         }

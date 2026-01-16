@@ -15,7 +15,7 @@ struct NoteListView: UIViewRepresentable {
     
     func makeUIView(context: Context) -> UITableView {
         let tableView = UITableView(frame: .zero, style: .plain)
-        tableView.backgroundColor = .systemBackground
+        tableView.backgroundColor = .appBackground
         tableView.separatorStyle = .none
         tableView.delegate = context.coordinator
         tableView.dataSource = context.coordinator
@@ -176,7 +176,7 @@ class NoteCell: UITableViewCell {
         deleteButton.addTarget(self, action: #selector(deleteButtonTapped), for: .touchUpInside)
         deleteContainerView.addSubview(deleteButton)
         
-        cellContentView.backgroundColor = .systemBackground
+        cellContentView.backgroundColor = .appBackground
         cellContentView.translatesAutoresizingMaskIntoConstraints = false
         contentView.addSubview(cellContentView)
         

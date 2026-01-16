@@ -37,3 +37,29 @@ extension Font {
         return Font.custom(fontName, size: size)
     }
 }
+
+// MARK: - App Colors
+
+let mycolor = 0x121212
+
+extension UIColor {
+    convenience init(hex: Int, alpha: CGFloat = 1.0) {
+        let r = CGFloat((hex >> 16) & 0xFF) / 255.0
+        let g = CGFloat((hex >> 8) & 0xFF) / 255.0
+        let b = CGFloat(hex & 0xFF) / 255.0
+        self.init(red: r, green: g, blue: b, alpha: alpha)
+    }
+
+    static let appBackground = UIColor(hex: mycolor)
+}
+
+extension Color {
+    init(hex: Int) {
+        let r = Double((hex >> 16) & 0xFF) / 255.0
+        let g = Double((hex >> 8) & 0xFF) / 255.0
+        let b = Double(hex & 0xFF) / 255.0
+        self.init(red: r, green: g, blue: b)
+    }
+
+    static let appBackground = Color(hex: mycolor)
+}
