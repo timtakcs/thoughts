@@ -10,6 +10,7 @@ import SwiftUI
 
 struct EditorContainer: UIViewRepresentable {
     let model: EditorModel
+    let newNote: Bool
     let onDismiss: () -> Void
 
     func makeUIView(context: Context) -> ContainerView {
@@ -40,8 +41,14 @@ struct EditorContainer: UIViewRepresentable {
         return containerView
     }
 
-    public func updateUIView(_ uiView: ContainerView, context: Context) {
+    func updateUIView(_ uiView: ContainerView, context: Context) {
         uiView.editorView?.setText(text: model.text)
+
+        if newNote {
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
+                uiView.editorView?.focusTextView()
+            }
+        }
     }
 
     func makeCoordinator() -> Coordinator {

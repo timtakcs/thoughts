@@ -23,7 +23,7 @@ struct List: View {
 
     @State private var notes: [Note] = []
     @State private var notesObservation: AnyDatabaseCancellable?
-
+    @State private var newNote: Bool = false
     @State private var activeNoteId: Int64? = nil
     @State private var editorOffset: CGFloat = UIScreen.main.bounds.height
     @State private var editorModel: EditorModel = .init()
@@ -66,6 +66,7 @@ struct List: View {
                     Button(action: {
                         activeNoteId = nil
                         editorModel.text = ""
+                        newNote = true
                         withAnimation(.spring(response: 0.3, dampingFraction: 0.8)) {
                             editorOffset = 0
                         }
@@ -89,9 +90,11 @@ struct List: View {
 
             // MARK: - Editor Overlay
             EditorContainer(model: editorModel,
+                            newNote: newNote,
                             onDismiss: {
                                 withAnimation(.spring(response: 0.5, dampingFraction: 0.7)) {
                                     editorOffset = UIScreen.main.bounds.height
+                                    newNote = false
                                     saveNoteAndRefresh()
                                 }
             })
