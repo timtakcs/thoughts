@@ -80,7 +80,7 @@ class ScrollIndicatorTableView: UITableView {
 
         if isDragging || isDecelerating {
             UIView.animate(withDuration: 0.15) {
-                self.scrollIndicator.alpha = 0.6
+                self.scrollIndicator.alpha = 1.0
             }
         }
     }
@@ -220,6 +220,10 @@ struct NoteListView: UIViewRepresentable {
         }
 
         func scrollViewDidEndDecelerating(_ scrollView: UIScrollView) {
+            // this is being called if the scroller is at the top
+            // and i try to scroll again
+            // which causes a flicker
+            // TODO: fix the flicker
             (scrollView as? ScrollIndicatorTableView)?.hideScrollIndicator()
         }
     }
