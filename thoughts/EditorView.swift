@@ -16,6 +16,7 @@ class EditorView: UIView {
     private var hasTriggeredHaptic = false
     private var hasSetInitialOffset = false
     private var keyboardHeight: CGFloat = 0
+    private var scrollIndicator: ScrollIndicator?
 
     private let bulletPrefix = "• "
 
@@ -28,6 +29,7 @@ class EditorView: UIView {
 
         setupTextView()
         setupKeyboardObservers()
+        scrollIndicator = ScrollIndicator(scrollView: textView)
         setText(text: text)
     }
 
@@ -73,6 +75,7 @@ class EditorView: UIView {
         textView.isScrollEnabled = true
         textView.alwaysBounceVertical = true
         textView.keyboardDismissMode = .onDrag
+        textView.showsVerticalScrollIndicator = false
 
         addSubview(textView)
 
@@ -104,13 +107,15 @@ class EditorView: UIView {
             keyboardHeight = keyboardFrame.height
             textView.contentInset.bottom = keyboardHeight
             textView.verticalScrollIndicatorInsets.bottom = keyboardHeight
+            scrollIndicator?.updateBottomInset(keyboardHeight, animatingWith: notification)
         }
     }
 
     @objc private func keyboardWillHide(_ notification: Notification) {
         keyboardHeight = 0
-        textView.contentInset.bottom = keyboardHeight
-        textView.verticalScrollIndicatorInsets.bottom = keyboardHeight
+        textView.contentInset.bottom = 0
+        textView.verticalScrollIndicatorInsets.bottom = 0
+        scrollIndicator?.updateBottomInset(0, animatingWith: notification)
     }
 
     override func layoutSubviews() {
@@ -160,6 +165,8 @@ extension EditorView: UITextViewDelegate {
     }
 
     func scrollViewDidScroll(_ scrollView: UIScrollView) {
+        scrollIndicator?.updatePosition()
+
         if scrollView.contentOffset.y < dismissThreshold && !hasTriggeredHaptic {
             let generator = UIImpactFeedbackGenerator(style: .medium)
             generator.impactOccurred()
@@ -171,10 +178,18 @@ extension EditorView: UITextViewDelegate {
     }
 
     func scrollViewDidEndDragging(_ scrollView: UIScrollView, willDecelerate decelerate: Bool) {
+        if !decelerate {
+            scrollIndicator?.scheduleHide()
+        }
+
         if scrollView.contentOffset.y < dismissThreshold {
             DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
                 self.onDismiss()
             }
         }
+    }
+
+    func scrollViewDidEndDecelerating(_ scrollView: UIScrollView) {
+        scrollIndicator?.hideAfterDeceleration()
     }
 }
