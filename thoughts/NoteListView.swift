@@ -8,26 +8,109 @@
 import SwiftUI
 import UIKit
 
+class ScrollIndicatorTableView: UITableView {
+    private let scrollIndicator = UIView()
+    private let indicatorHeight: CGFloat = 30
+    private let indicatorWidth: CGFloat = 3
+    private let indicatorInset: CGFloat = 4
+
+    override init(frame: CGRect, style: UITableView.Style) {
+        super.init(frame: frame, style: style)
+        setupScrollIndicator()
+    }
+
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+
+    private func setupScrollIndicator() {
+        scrollIndicator.backgroundColor = .white
+        scrollIndicator.layer.cornerRadius = indicatorWidth / 2
+        scrollIndicator.alpha = 0
+        addSubview(scrollIndicator)
+    }
+
+    override func layoutSubviews() {
+        super.layoutSubviews()
+        updateScrollIndicator()
+        bringSubviewToFront(scrollIndicator)
+    }
+
+    func updateScrollIndicator() {
+        let contentHeight = contentSize.height
+        let viewHeight = bounds.height
+        let maxOffset = contentHeight - viewHeight + adjustedContentInset.bottom
+
+        guard maxOffset > 0 else {
+            scrollIndicator.alpha = 0
+            return
+        }
+
+        let trackHeight = viewHeight - indicatorHeight - (indicatorInset * 2) - safeAreaInsets.top - safeAreaInsets.bottom
+        let minIndicatorHeight: CGFloat = 8
+
+        var currentHeight = indicatorHeight
+        var indicatorY: CGFloat
+
+        if contentOffset.y < 0 {
+            // Overscroll at top - compress from top, pin to top
+            let overscroll = -contentOffset.y
+            let compression = min(overscroll * 0.5, indicatorHeight - minIndicatorHeight)
+            currentHeight = indicatorHeight - compression
+            indicatorY = safeAreaInsets.top + indicatorInset + contentOffset.y
+        } else if contentOffset.y > maxOffset {
+            // Overscroll at bottom - compress from bottom, pin to bottom (respecting safe area)
+            let overscroll = contentOffset.y - maxOffset
+            let compression = min(overscroll * 0.5, indicatorHeight - minIndicatorHeight)
+            currentHeight = indicatorHeight - compression
+            indicatorY = viewHeight - safeAreaInsets.bottom - indicatorInset - currentHeight + contentOffset.y
+        } else {
+            // Normal scrolling
+            let scrollProgress = contentOffset.y / maxOffset
+            indicatorY = safeAreaInsets.top + indicatorInset + (scrollProgress * trackHeight) + contentOffset.y
+        }
+
+        scrollIndicator.frame = CGRect(
+            x: bounds.width - indicatorWidth - indicatorInset,
+            y: indicatorY,
+            width: indicatorWidth,
+            height: currentHeight
+        )
+        scrollIndicator.layer.cornerRadius = indicatorWidth / 2
+
+        if isDragging || isDecelerating {
+            UIView.animate(withDuration: 0.15) {
+                self.scrollIndicator.alpha = 0.6
+            }
+        }
+    }
+
+    func hideScrollIndicator() {
+        UIView.animate(withDuration: 0.3, delay: 0.5) {
+            self.scrollIndicator.alpha = 0
+        }
+    }
+}
+
 struct NoteListView: UIViewRepresentable {
     let notes: [Note]
     let onNoteTap: (Note) -> Void
     let onNoteDelete: (Note) -> Void
     
-    func makeUIView(context: Context) -> UITableView {
-        let tableView = UITableView(frame: .zero, style: .plain)
+    func makeUIView(context: Context) -> ScrollIndicatorTableView {
+        let tableView = ScrollIndicatorTableView(frame: .zero, style: .plain)
         tableView.backgroundColor = .appBackground
         tableView.separatorStyle = .none
         tableView.delegate = context.coordinator
         tableView.dataSource = context.coordinator
         tableView.register(NoteCell.self, forCellReuseIdentifier: "NoteCell")
-
+        tableView.showsVerticalScrollIndicator = false
         tableView.delaysContentTouches = false
-//        tableView.canCancelContentTouches = true
 
         return tableView
     }
     
-    func updateUIView(_ uiView: UITableView, context: Context) {
+    func updateUIView(_ uiView: ScrollIndicatorTableView, context: Context) {
         let oldNotes = context.coordinator.notes
         let newNotes = notes
 
@@ -124,6 +207,20 @@ struct NoteListView: UIViewRepresentable {
         
         func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
             tableView.deselectRow(at: indexPath, animated: false)
+        }
+
+        func scrollViewDidScroll(_ scrollView: UIScrollView) {
+            (scrollView as? ScrollIndicatorTableView)?.updateScrollIndicator()
+        }
+
+        func scrollViewDidEndDragging(_ scrollView: UIScrollView, willDecelerate decelerate: Bool) {
+            if !decelerate {
+                (scrollView as? ScrollIndicatorTableView)?.hideScrollIndicator()
+            }
+        }
+
+        func scrollViewDidEndDecelerating(_ scrollView: UIScrollView) {
+            (scrollView as? ScrollIndicatorTableView)?.hideScrollIndicator()
         }
     }
 }
