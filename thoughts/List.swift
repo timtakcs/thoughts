@@ -97,7 +97,7 @@ struct List: View {
             EditorContainer(offset: editorOffset,
                             model: editorModel,
                             onDismiss: {
-                                withAnimation(.spring(response: 0.3, dampingFraction: 0.7)) {
+                withAnimation(.spring(response: 0.5, dampingFraction: 0.7)) {
                                     editorOffset = UIScreen.main.bounds.height
                                     saveNoteAndRefresh()
                                 }
@@ -157,7 +157,7 @@ struct List: View {
             activeNoteId = nil
 
             DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
-                withAnimation(.easeInOut(duration: 0.3)) {
+                withAnimation(.easeInOut(duration: 0.5)) {
                     loadNotes()
                 }
             }

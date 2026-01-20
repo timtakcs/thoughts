@@ -90,7 +90,7 @@ class EditorView: UIView {
 
         textView.isScrollEnabled = true
         textView.alwaysBounceVertical = true
-        textView.keyboardDismissMode = .interactive
+        textView.keyboardDismissMode = .onDrag
 
         addSubview(textView)
 
@@ -180,23 +180,6 @@ class EditorView: UIView {
             )
         }
     }
-
-    func scrollViewDidScroll(_ scrollView: UIScrollView) {
-        if scrollView.contentOffset.y < dismissThreshold && !hasTriggeredHaptic {
-            let generator = UIImpactFeedbackGenerator(style: .medium)
-            generator.impactOccurred()
-            hasTriggeredHaptic = true
-        }
-        if scrollView.contentOffset.y >= dismissThreshold {
-            hasTriggeredHaptic = false
-        }
-    }
-
-    func scrollViewDidEndDragging(_ scrollView: UIScrollView, willDecelerate decelerate: Bool) {
-        if scrollView.contentOffset.y < dismissThreshold {
-            onDismiss()
-        }
-    }
 }
 
 extension EditorView: UITextViewDelegate {
@@ -233,5 +216,24 @@ extension EditorView: UITextViewDelegate {
         }
 
         return true
+    }
+
+    func scrollViewDidScroll(_ scrollView: UIScrollView) {
+        if scrollView.contentOffset.y < dismissThreshold && !hasTriggeredHaptic {
+            let generator = UIImpactFeedbackGenerator(style: .medium)
+            generator.impactOccurred()
+            hasTriggeredHaptic = true
+        }
+        if scrollView.contentOffset.y >= dismissThreshold {
+            hasTriggeredHaptic = false
+        }
+    }
+
+    func scrollViewDidEndDragging(_ scrollView: UIScrollView, willDecelerate decelerate: Bool) {
+        if scrollView.contentOffset.y < dismissThreshold {
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
+                self.onDismiss()
+            }
+        }
     }
 }
