@@ -19,24 +19,6 @@ class EditorView: UIView {
 
     private let bulletPrefix = "• "
 
-
-    var isAtTop: Bool {
-        return textView.contentOffset.y <= 0
-    }
-    
-    var contentOffsetY: CGFloat {
-        return textView.contentOffset.y
-    }
-    
-    var maxContentOffset: CGFloat {
-        return max(0, textView.contentSize.height - textView.bounds.height)
-    }
-
-    var hasTextSelection: Bool {
-        guard let selectedRange = textView.selectedTextRange else { return false }
-        return selectedRange.start != selectedRange.end
-    }
-
     init(text: String,
          onTextChange: @escaping (String) -> Void,
          onDismiss: @escaping () -> Void) {
@@ -139,47 +121,6 @@ class EditorView: UIView {
         }
     }
 
-    func dismissKeyboard() {
-        textView.resignFirstResponder()
-    }
-
-    // this shouldn;t be needed soon
-    func setContentOffset(_ offsetY: CGFloat, allowOverscroll: Bool = false) {
-        let finalOffset: CGFloat
-
-        if allowOverscroll {
-            if offsetY > maxContentOffset {
-                let overshoot = offsetY - maxContentOffset
-                let resistance: CGFloat = 150
-                let resistedOvershoot = resistance * (1 - 1 / (1 + overshoot / resistance))
-                finalOffset = maxContentOffset + resistedOvershoot
-            } else {
-                finalOffset = max(0, offsetY)
-            }
-        } else {
-            finalOffset = max(0, min(offsetY, maxContentOffset))
-        }
-
-        textView.contentOffset = CGPoint(x: 0, y: finalOffset)
-    }
-
-    func finishScrolling(velocity: CGPoint) {
-        let currentOffset = textView.contentOffset.y
-
-        if currentOffset > maxContentOffset || currentOffset < 0 {
-            let targetOffset = currentOffset > maxContentOffset ? maxContentOffset : 0
-            UIView.animate(
-                withDuration: 0.3,
-                delay: 0,
-                usingSpringWithDamping: 0.7,
-                initialSpringVelocity: 0,
-                options: [],
-                animations: {
-                    self.textView.contentOffset = CGPoint(x: 0, y: targetOffset)
-                }
-            )
-        }
-    }
 }
 
 extension EditorView: UITextViewDelegate {

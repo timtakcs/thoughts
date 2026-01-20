@@ -28,7 +28,6 @@ struct List: View {
     @State private var notes: [Note] = []
 
     @State private var activeNoteId: Int64? = nil
-    @State private var showingEditor = false
     @State private var editorOffset: CGFloat = UIScreen.main.bounds.height
     @State private var editorModel: EditorModel = .init()
 
@@ -51,7 +50,6 @@ struct List: View {
                             activeNoteId = noteId
                             editorModel.text = note.content
                             withAnimation(.spring(response: 0.3, dampingFraction: 0.8)) {
-                                showingEditor = true
                                 editorOffset = 0
                             }
                         }
@@ -72,7 +70,6 @@ struct List: View {
                         activeNoteId = nil
                         editorModel.text = ""
                         withAnimation(.spring(response: 0.3, dampingFraction: 0.8)) {
-                            showingEditor = true
                             editorOffset = 0
                         }
                     }) {
@@ -94,31 +91,15 @@ struct List: View {
             }
 
             // MARK: - Editor Overlay
-            EditorContainer(offset: editorOffset,
-                            model: editorModel,
+            EditorContainer(model: editorModel,
                             onDismiss: {
-                withAnimation(.spring(response: 0.5, dampingFraction: 0.7)) {
+                                withAnimation(.spring(response: 0.5, dampingFraction: 0.7)) {
                                     editorOffset = UIScreen.main.bounds.height
                                     saveNoteAndRefresh()
                                 }
-                            })
-                .onDragChanged { value in
-                    editorOffset = max(0.0, value.translation.y)
-                }
-                .onDragEnded { value in
-                    if value.translation.y > 150 {
-                        withAnimation(.spring(response: 0.3, dampingFraction: 0.7)) {
-                            editorOffset = UIScreen.main.bounds.height
-                            saveNoteAndRefresh()
-                        }
-                    } else {
-                        withAnimation(.spring(response: 0.3, dampingFraction: 0.7)) {
-                            editorOffset = 0
-                        }
-                    }
-                }
-                .offset(y: editorOffset)
-                .ignoresSafeArea(edges: .bottom)
+            })
+            .offset(y: editorOffset)
+            .ignoresSafeArea(edges: .bottom)
         }
         .background(Color.appBackground.ignoresSafeArea(edges: .top))
         .onAppear() {
