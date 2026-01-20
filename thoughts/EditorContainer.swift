@@ -81,7 +81,7 @@ struct EditorContainer: UIViewRepresentable {
         
         let gestureManager = context.coordinator.gestureManager
         gestureManager.containerView = containerView
-        gestureManager.editorView = editorView
+//        gestureManager.editorView = editorView
 
         gestureManager.onDragChanged = onDragChanged
         gestureManager.onDragEnded = onDragEnded
@@ -92,8 +92,9 @@ struct EditorContainer: UIViewRepresentable {
             target: gestureManager,
             action: #selector(GestureManager.handlePan(_:))
         )
-        panGesture.delegate = gestureManager
-        containerView.addGestureRecognizer(panGesture)
+
+//        panGesture.delegate = gestureManager
+//        containerView.addGestureRecognizer(panGesture)
         
         context.coordinator.containerView = containerView
         

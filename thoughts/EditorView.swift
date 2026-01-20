@@ -65,9 +65,10 @@ class EditorView: UIView {
         textView.backgroundColor = .clear
         textView.tintColor = .white
 
-        textView.textContainerInset = UIEdgeInsets(top: 30, left: 24, bottom: 60, right: 24)
+        textView.textContainerInset = UIEdgeInsets(top: 30, left: 24, bottom: 0, right: 24)
         textView.delegate = self
         textView.contentOffset = .zero
+
 
         let paragraphStyle = NSMutableParagraphStyle()
         paragraphStyle.firstLineHeadIndent = 0
@@ -80,7 +81,8 @@ class EditorView: UIView {
         ]
 
         textView.isScrollEnabled = true
-        textView.panGestureRecognizer.isEnabled = false
+        textView.alwaysBounceVertical = true
+        textView.keyboardDismissMode = .interactive
 
         addSubview(textView)
 
@@ -110,25 +112,16 @@ class EditorView: UIView {
     @objc private func keyboardWillShow(_ notification: Notification) {
         if let keyboardFrame = notification.userInfo?[UIResponder.keyboardFrameEndUserInfoKey] as? CGRect {
             keyboardHeight = keyboardFrame.height
-            scrollCursorAboveKeyboard()
+            textView.contentInset.bottom = keyboardHeight
+            textView.verticalScrollIndicatorInsets.bottom = keyboardHeight
         }
     }
 
     @objc private func keyboardWillHide(_ notification: Notification) {
         keyboardHeight = 0
+        textView.contentInset.bottom = keyboardHeight
+        textView.verticalScrollIndicatorInsets.bottom = keyboardHeight
     }
-
-    private func scrollCursorAboveKeyboard() {
-        guard keyboardHeight > 0 else { return }
-        guard let selectedRange = textView.selectedTextRange else { return }
-
-        let cursorRect = textView.caretRect(for: selectedRange.start)
-        let targetVisibleY = textView.bounds.height - keyboardHeight - 20
-        let targetOffset = cursorRect.maxY - targetVisibleY
-        let finalOffset = max(0, targetOffset)
-
-        self.textView.setContentOffset(CGPoint(x: 0, y: finalOffset), animated: false)
-  }
 
     override func layoutSubviews() {
         super.layoutSubviews()
@@ -141,7 +134,8 @@ class EditorView: UIView {
     func dismissKeyboard() {
         textView.resignFirstResponder()
     }
-    
+
+    // this shouldn;t be needed soon
     func setContentOffset(_ offsetY: CGFloat, allowOverscroll: Bool = false) {
         let finalOffset: CGFloat
 
@@ -195,12 +189,6 @@ extension EditorView: UITextViewDelegate {
         }
 
         onTextChange(textView.text)
-
-        scrollCursorAboveKeyboard()
-    }
-
-    func textViewDidChangeSelection(_ textView: UITextView) {
-        scrollCursorAboveKeyboard()
     }
 
     func textView(_ textView: UITextView, shouldChangeTextIn range: NSRange, replacementText text: String) -> Bool {
@@ -215,12 +203,10 @@ extension EditorView: UITextViewDelegate {
             }
 
             onTextChange(textView.text)
-            scrollCursorAboveKeyboard()
 
             return false
         }
 
-        scrollCursorAboveKeyboard()
         return true
     }
 }
