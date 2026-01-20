@@ -181,7 +181,7 @@ class NoteCell: UITableViewCell {
         backgroundColor = .clear
         selectionStyle = .none
         
-        deleteContainerView.backgroundColor = .systemRed
+        deleteContainerView.backgroundColor = .deleteBackground
         deleteContainerView.translatesAutoresizingMaskIntoConstraints = false
         contentView.addSubview(deleteContainerView)
         
@@ -306,7 +306,7 @@ class NoteCell: UITableViewCell {
         self.layoutIfNeeded()
 
         let fadeProgress = min(max((-currentOffset - deleteThreshold) / (bounds.width - deleteThreshold), 0), 1)
-        deleteContainerView.backgroundColor = UIColor.systemRed.withAlphaComponent(1.0 - fadeProgress * 0.8)
+        deleteContainerView.backgroundColor = UIColor.deleteBackground.withAlphaComponent(1.0 - fadeProgress * 0.8)
 
         let buttonOpacity = min(-currentOffset / deleteButtonWidth, 1.0)
         deleteButton.alpha = buttonOpacity

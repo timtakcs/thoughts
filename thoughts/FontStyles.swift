@@ -41,6 +41,7 @@ extension Font {
 // MARK: - App Colors
 
 let mycolor = 0x121212
+let deleteColor = 0xEB3C30
 
 extension UIColor {
     convenience init(hex: Int, alpha: CGFloat = 1.0) {
@@ -51,6 +52,7 @@ extension UIColor {
     }
 
     static let appBackground = UIColor(hex: mycolor)
+    static let deleteBackground = UIColor(hex: deleteColor)
 }
 
 extension Color {
@@ -62,4 +64,5 @@ extension Color {
     }
 
     static let appBackground = Color(hex: mycolor)
+    static let deleteBackground = Color(hex: deleteColor)
 }
