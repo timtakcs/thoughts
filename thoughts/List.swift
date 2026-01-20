@@ -7,6 +7,7 @@
 
 import SwiftUI
 import CoreLocation
+import GRDB
 
 let singaporeLocation = CLLocation(
     latitude: 1.290270,
@@ -15,17 +16,13 @@ let singaporeLocation = CLLocation(
 
 @Observable public final class EditorModel {
     var text: String = ""
-    var needsLoad: Bool = false
-
-    // Closures that EditorView will populate
-    var save: (() -> Void)?
-    var load: (() -> Void)?
 }
 
 struct List: View {
     let db: DB
 
     @State private var notes: [Note] = []
+    @State private var notesObservation: AnyDatabaseCancellable?
 
     @State private var activeNoteId: Int64? = nil
     @State private var editorOffset: CGFloat = UIScreen.main.bounds.height
@@ -102,16 +99,18 @@ struct List: View {
             .ignoresSafeArea(edges: .bottom)
         }
         .background(Color.appBackground.ignoresSafeArea(edges: .top))
-        .onAppear() {
-            loadNotes()
-        }
-    }
+        .onAppear {
+            let observation = ValueObservation.tracking { db in
+                try Note.fetchAll(db, sql: "SELECT * FROM note ORDER BY date DESC")
+            }
 
-    private func loadNotes() {
-        do {
-            notes = try db.fetchAllNotes()
-        } catch {
-            print("Failed to load notes: \(error)")
+            notesObservation = observation.start(in: db.dbQueue, scheduling: .immediate) { error in
+                print("Observation error: \(error)")
+            } onChange: { newNotes in
+                withAnimation(.easeInOut(duration: 0.3)) {
+                    notes = newNotes
+                }
+            }
         }
     }
 
@@ -136,12 +135,6 @@ struct List: View {
 
             editorModel.text = ""
             activeNoteId = nil
-
-            DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
-                withAnimation(.easeInOut(duration: 0.5)) {
-                    loadNotes()
-                }
-            }
         } catch {
             print("Failed to save note: \(error)")
         }
@@ -152,9 +145,6 @@ struct List: View {
 
         do {
             try db.deleteNote(id: noteId)
-            withAnimation(.easeInOut(duration: 0.3)) {
-                loadNotes()
-            }
         } catch {
             print("Failed to delete note: \(error)")
         }

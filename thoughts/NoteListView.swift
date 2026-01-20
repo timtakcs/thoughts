@@ -67,21 +67,18 @@ struct NoteListView: UIViewRepresentable {
         var deletions: [IndexPath] = []
         var insertions: [IndexPath] = []
 
-        if newNotes.count < oldNotes.count {
-            let newIDs = Set(newNotes.map { $0.id })
-            for (index, note) in oldNotes.enumerated() {
-                if !newIDs.contains(note.id) {
-                    deletions.append(IndexPath(row: index, section: 0))
-                    break
-                }
+        let oldIDs = Set(oldNotes.map { $0.id })
+        let newIDs = Set(newNotes.map { $0.id })
+
+        for (index, note) in oldNotes.enumerated() {
+            if !newIDs.contains(note.id) {
+                deletions.append(IndexPath(row: index, section: 0))
             }
-        } else if newNotes.count > oldNotes.count {
-            let oldIDs = Set(oldNotes.map { $0.id })
-            for (index, note) in newNotes.enumerated() {
-                if !oldIDs.contains(note.id) {
-                    insertions.append(IndexPath(row: index, section: 0))
-                    break
-                }
+        }
+
+        for (index, note) in newNotes.enumerated() {
+            if !oldIDs.contains(note.id) {
+                insertions.append(IndexPath(row: index, section: 0))
             }
         }
 
