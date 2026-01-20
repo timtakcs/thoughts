@@ -10,10 +10,15 @@ import UIKit
 class EditorView: UIView {
     private let textView = UITextView()
     private let onTextChange: (String) -> Void
+    private let onDismiss: () -> Void
+    private let dismissThreshold: CGFloat = -60
+
+    private var hasTriggeredHaptic = false
     private var hasSetInitialOffset = false
     private var keyboardHeight: CGFloat = 0
 
     private let bulletPrefix = "• "
+
 
     var isAtTop: Bool {
         return textView.contentOffset.y <= 0
@@ -32,8 +37,11 @@ class EditorView: UIView {
         return selectedRange.start != selectedRange.end
     }
 
-    init(text: String, onTextChange: @escaping (String) -> Void) {
+    init(text: String,
+         onTextChange: @escaping (String) -> Void,
+         onDismiss: @escaping () -> Void) {
         self.onTextChange = onTextChange
+        self.onDismiss = onDismiss
         super.init(frame: .zero)
 
         setupTextView()
@@ -170,6 +178,23 @@ class EditorView: UIView {
                     self.textView.contentOffset = CGPoint(x: 0, y: targetOffset)
                 }
             )
+        }
+    }
+
+    func scrollViewDidScroll(_ scrollView: UIScrollView) {
+        if scrollView.contentOffset.y < dismissThreshold && !hasTriggeredHaptic {
+            let generator = UIImpactFeedbackGenerator(style: .medium)
+            generator.impactOccurred()
+            hasTriggeredHaptic = true
+        }
+        if scrollView.contentOffset.y >= dismissThreshold {
+            hasTriggeredHaptic = false
+        }
+    }
+
+    func scrollViewDidEndDragging(_ scrollView: UIScrollView, willDecelerate decelerate: Bool) {
+        if scrollView.contentOffset.y < dismissThreshold {
+            onDismiss()
         }
     }
 }

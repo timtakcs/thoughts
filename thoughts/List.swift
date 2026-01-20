@@ -94,7 +94,14 @@ struct List: View {
             }
 
             // MARK: - Editor Overlay
-            EditorContainer(offset: editorOffset, model: editorModel)
+            EditorContainer(offset: editorOffset,
+                            model: editorModel,
+                            onDismiss: {
+                                withAnimation(.spring(response: 0.3, dampingFraction: 0.7)) {
+                                    editorOffset = UIScreen.main.bounds.height
+                                    saveNoteAndRefresh()
+                                }
+                            })
                 .onDragChanged { value in
                     editorOffset = max(0.0, value.translation.y)
                 }
@@ -149,7 +156,7 @@ struct List: View {
             editorModel.text = ""
             activeNoteId = nil
 
-            DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
                 withAnimation(.easeInOut(duration: 0.3)) {
                     loadNotes()
                 }

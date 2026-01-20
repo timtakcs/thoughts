@@ -11,17 +11,20 @@ import SwiftUI
 struct EditorContainer: UIViewRepresentable {
     var offset: Binding<CGFloat>
     let model: EditorModel
-    
+    let onDismiss: () -> Void
+
     private let onDragChanged: (Value) -> Void
     private let onDragEnded: (Value) -> Void
     
     public init(
         offset: CGFloat,
-        model: EditorModel
+        model: EditorModel,
+        onDismiss: @escaping () -> Void
     ) {
         self.init(
             offset: offset,
             model: model,
+            onDismiss: onDismiss,
             onDragChanged: { _ in },
             onDragEnded: { _ in }
         )
@@ -30,11 +33,13 @@ struct EditorContainer: UIViewRepresentable {
     internal init(
         offset: CGFloat,
         model: EditorModel,
+        onDismiss: @escaping () -> Void,
         onDragChanged: @escaping (Value) -> Void,
         onDragEnded: @escaping (Value) -> Void
     ) {
         self.offset = .constant(offset)
         self.model = model
+        self.onDismiss = onDismiss
         self.onDragChanged = onDragChanged
         self.onDragEnded = onDragEnded
     }
@@ -43,6 +48,7 @@ struct EditorContainer: UIViewRepresentable {
         EditorContainer(
             offset: offset.wrappedValue,
             model: model,
+            onDismiss: onDismiss,
             onDragChanged: action,
             onDragEnded: onDragEnded
         )
@@ -52,6 +58,7 @@ struct EditorContainer: UIViewRepresentable {
         EditorContainer(
             offset: offset.wrappedValue,
             model: model,
+            onDismiss: onDismiss,
             onDragChanged: onDragChanged,
             onDragEnded: action
         )
@@ -64,7 +71,8 @@ struct EditorContainer: UIViewRepresentable {
             text: model.text,
             onTextChange: { newtext in
                 model.text = newtext
-            }
+            }, 
+            onDismiss: onDismiss
         )
 
         containerView.editorView = editorView
