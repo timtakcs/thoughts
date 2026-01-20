@@ -189,9 +189,12 @@ class NoteCell: UITableViewCell {
         deleteButton.setImage(trashIcon, for: .normal)
         deleteButton.tintColor = .white
         deleteButton.translatesAutoresizingMaskIntoConstraints = false
-        deleteButton.addTarget(self, action: #selector(deleteButtonTapped), for: .touchUpInside)
+        deleteButton.isUserInteractionEnabled = false
         deleteContainerView.addSubview(deleteButton)
-        
+
+        let deleteContainerTap = UITapGestureRecognizer(target: self, action: #selector(deleteButtonTapped))
+        deleteContainerView.addGestureRecognizer(deleteContainerTap)
+
         cellContentView.backgroundColor = .appBackground
         cellContentView.translatesAutoresizingMaskIntoConstraints = false
         contentView.addSubview(cellContentView)
