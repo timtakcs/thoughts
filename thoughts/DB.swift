@@ -16,6 +16,7 @@ struct Note: Identifiable {
     let content: String
     let latitude: Double
     let longitude: Double
+    let deleted: Bool
 }
 
 extension Note: FetchableRecord {
@@ -26,6 +27,7 @@ extension Note: FetchableRecord {
         static let updated = Column("updated")
         static let latitude = Column("latitude")
         static let longitude = Column("longitude")
+        static let deleted = Column("deleted")
     }
 
     init(row: Row) throws {
@@ -35,6 +37,7 @@ extension Note: FetchableRecord {
         self.updated = row[Columns.updated]
         self.latitude = row[Columns.latitude]
         self.longitude = row[Columns.longitude]
+        self.deleted = row[Columns.deleted]
     }
 }
 
@@ -52,10 +55,18 @@ struct DB {
                     date REAL NOT NULL,
                     updated REAL NOT NULL,
                     longitude REAL NOT NULL,
-                    latitude REAL NOT NULL
+                    latitude REAL NOT NULL,
+                    deleted INTEGER NOT NULL DEFAULT 0
                 );
                 """
             )
+
+            // Migration: add deleted column if it doesn't exist
+            let columns = try Row.fetchAll(db, sql: "PRAGMA table_info(note)")
+            let columnNames = columns.map { $0["name"] as String }
+            if !columnNames.contains("deleted") {
+                try db.execute(sql: "ALTER TABLE note ADD COLUMN deleted INTEGER NOT NULL DEFAULT 0")
+            }
         }
     }
 
@@ -78,11 +89,29 @@ struct DB {
         try dbQueue.read { db in
             try Note.fetchAll(
                 db,
+                sql: "SELECT * FROM note WHERE deleted = 0 ORDER BY date DESC")
+        }
+    }
+
+    func fetchAllNotesIncludingTombstoned() throws -> [Note] {
+        try dbQueue.read { db in
+            try Note.fetchAll(
+                db,
                 sql: "SELECT * FROM note ORDER BY date DESC")
         }
     }
 
     func deleteNote(id: Int64) throws {
+        let date = Date()
+        try dbQueue.write { db in
+            try db.execute(
+                sql: "UPDATE note SET deleted = 1, updated = ? WHERE id = ?",
+                arguments: [date, id]
+            )
+        }
+    }
+
+    func permanentlyDeleteNote(id: Int64) throws {
         try dbQueue.write { db in
             try db.execute(
                 sql: "DELETE FROM note WHERE id = ?",
@@ -99,6 +128,12 @@ struct DB {
                 sql: "DELETE FROM note WHERE id IN (\(placeholders))",
                 arguments: StatementArguments(ids)
             )
+        }
+    }
+
+    func deleteTombstonedNotes() throws {
+        try dbQueue.write { db in
+            try db.execute(sql: "DELETE FROM note WHERE deleted = 1")
         }
     }
 
