@@ -104,7 +104,7 @@ struct List: View {
         .background(Color.appBackground.ignoresSafeArea(edges: .top))
         .onAppear {
             let observation = ValueObservation.tracking { db in
-                try Note.fetchAll(db, sql: "SELECT * FROM note ORDER BY date DESC")
+                try Note.fetchAll(db, sql: "SELECT * FROM note WHERE deleted = 0 ORDER BY date DESC")
             }
 
             notesObservation = observation.start(in: db.dbQueue, scheduling: .immediate) { error in

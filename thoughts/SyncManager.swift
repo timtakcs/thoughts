@@ -14,6 +14,7 @@ struct SyncNote: Codable {
     let updated: Double
     let longitude: Double
     let latitude: Double
+    let deleted: Bool
 }
 
 struct SyncResponse: Codable {
@@ -42,12 +43,13 @@ struct SyncManager {
             date: note.date.timeIntervalSince1970,
             updated: note.updated.timeIntervalSince1970,
             longitude: note.longitude,
-            latitude: note.latitude
+            latitude: note.latitude,
+            deleted: note.deleted
         )
     }
 
     func sync() async throws {
-        let notes = try db.fetchAllNotes().map(convertNote)
+        let notes = try db.fetchAllNotesIncludingTombstoned().map(convertNote)
         var request = URLRequest(url: self.baseURL.appendingPathComponent("sync"))
 
         request.httpMethod = "POST"
@@ -65,5 +67,6 @@ struct SyncManager {
 
         try db.deleteNotes(ids: syncResponse.delete)
         try db.upsertNotes(notes: syncResponse.load + syncResponse.update)
+        try db.deleteTombstonedNotes()
     }
 }
