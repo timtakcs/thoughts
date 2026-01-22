@@ -197,7 +197,7 @@ class NoteCell: UITableViewCell {
         contentView.addSubview(cellContentView)
         
         dayLabel.font = .iosevka(size: 20, weight: .bold)
-        dayLabel.textColor = .label
+        dayLabel.textColor = .appText
         dayLabel.textAlignment = .center
 
         monthLabel.font = .iosevka(size: 12)
@@ -212,7 +212,7 @@ class NoteCell: UITableViewCell {
         dateStackView.translatesAutoresizingMaskIntoConstraints = false
 
         contentLabel.font = .iosevka(size: 16)
-        contentLabel.textColor = .label
+        contentLabel.textColor = .appText
         contentLabel.numberOfLines = 1
         contentLabel.translatesAutoresizingMaskIntoConstraints = false
         

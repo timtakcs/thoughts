@@ -58,6 +58,7 @@ class EditorView: UIView {
 
         let customFont = UIFont.iosevka(size: 18, weight: .light)
         textView.font = customFont
+        textView.textColor = .appText
         textView.backgroundColor = .clear
         textView.tintColor = .white
 
@@ -73,7 +74,8 @@ class EditorView: UIView {
 
         textView.typingAttributes = [
             .font: customFont,
-            .paragraphStyle: paragraphStyle
+            .paragraphStyle: paragraphStyle,
+            .foregroundColor: UIColor.appText
         ]
 
         textView.isScrollEnabled = true
